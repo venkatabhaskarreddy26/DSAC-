@@ -1,0 +1,138 @@
+
+SQL*Plus: Release 10.2.0.1.0 - Production on Wed May 3 21:13:38 2023
+
+Copyright (c) 1982, 2005, Oracle.  All rights reserved.
+
+SQL> connect
+Enter user-name: system
+Enter password:
+Connected.
+SQL> set serveroutput on;
+SQL> CREATE TABLE bikes (
+  2      id INT PRIMARY KEY,
+  3      brand VARCHAR(20),
+  4      model VARCHAR(20),
+  5      type VARCHAR(20),
+  6      frame_size INT,
+  7      wheel_size INT,
+  8      color VARCHAR(20),
+  9      price DECIMAL(10, 2)
+ 10  );
+
+Table created.
+
+SQL> INSERT INTO bikes (id, brand, model, type, frame_size, wheel_size, color, price)
+  2  VALUES (1, 'Santa Cruz', 'Nomad', 'Mountain', 17, 29, 'Green', 4000.00);
+
+1 row created.
+
+SQL> INSERT INTO bikes (id, brand, model, type, frame_size, wheel_size, color, price)
+  2  VALUES (2, 'Specialized', 'Roubaix', 'Road', 56, 700, 'Black', 3000.00);
+
+1 row created.
+
+SQL> INSERT INTO bikes (id, brand, model, type, frame_size, wheel_size, color, price)
+  2  VALUES (3, 'Giant', 'Escape', 'Hybrid', 20, 700, 'Blue', 600.00);
+
+1 row created.
+
+SQL> INSERT INTO bikes (id, brand, model, type, frame_size, wheel_size, color, price)
+  2  VALUES (4, 'Cannondale', 'Synapse', 'Road', 54, 700, 'White', 2000.00);
+
+1 row created.
+
+SQL> INSERT INTO bikes (id, brand, model, type, frame_size, wheel_size, color, price)
+  2  VALUES (5, 'Santa Cruz', 'Nomad', 'Mountain', 17, 29, 'Green', 4000.00);
+
+1 row created.
+
+SQL> DECLARE
+  2     c_id bikes.id%type;
+  3     c_brand bikes.brand%type;
+  4     c_model bikes.model%type;
+  5     CURSOR c_bikes is
+  6        SELECT id, brand, model FROM bikes;
+  7  BEGIN
+  8     OPEN c_bikes;
+  9     LOOP
+ 10     FETCH c_bikes into c_id, c_brand, c_model;
+ 11        EXIT WHEN c_bikes%notfound;
+ 12        dbms_output.put_line(c_id || ' ' || c_brand || ' ' || c_model);
+ 13     END LOOP;
+ 14     CLOSE c_bikes;
+ 15  END;
+ 16  /
+1 Santa Cruz Nomad
+2 Specialized Roubaix
+3 Giant Escape
+4 Cannondale Synapse
+5 Santa Cruz Nomad
+
+PL/SQL procedure successfully completed.
+
+pl/sql programs:-
+
+CREATE OR REPLACE FUNCTION get_total_bike_count
+RETURN NUMBER
+AS
+  total_count NUMBER := 0;
+BEGIN
+  SELECT COUNT(*) INTO total_count
+  FROM bikes;
+  RETURN total_count;
+END;
+/ 
+
+SQL> CREATE OR REPLACE TRIGGER display_price_changes
+  2  BEFORE DELETE OR INSERT OR UPDATE ON bikes
+  3  FOR EACH ROW
+  4  WHEN (NEW.ID > 0)
+  5  DECLARE
+  6     price_diff number;
+  7  BEGIN
+  8     price_diff := :NEW.price  - :OLD.price;
+  9     dbms_output.put_line('Old price: ' || :OLD.price);
+ 10     dbms_output.put_line('New price: ' || :NEW.price);
+ 11     dbms_output.put_line('price difference: ' || price_diff);
+ 12  END;
+ 13  /
+
+Trigger created.
+
+SQL> UPDATE bikes
+  2  SET price = price + 500
+  3  WHERE id = 2;
+Old price: 3000
+New price: 3500
+price difference: 500
+
+1 row updated.
+
+SQL> select * from bikes;
+
+        ID BRAND                MODEL                TYPE
+---------- -------------------- -------------------- --------------------
+FRAME_SIZE WHEEL_SIZE COLOR                     PRICE
+---------- ---------- -------------------- ----------
+         1 Santa Cruz           Nomad                Mountain
+        17         29 Green                      4000
+
+         2 Specialized          Roubaix              Road
+        56        700 Black                      3500
+
+         3 Giant                Escape               Hybrid
+        20        700 Blue                        600
+
+
+        ID BRAND                MODEL                TYPE
+---------- -------------------- -------------------- --------------------
+FRAME_SIZE WHEEL_SIZE COLOR                     PRICE
+---------- ---------- -------------------- ----------
+         4 Cannondale           Synapse              Road
+        54        700 White                      2000
+
+         5 Santa Cruz           Nomad                Mountain
+        17         29 Green                      4000
+
+
+SQL>

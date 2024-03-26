@@ -1,0 +1,166 @@
+pro1 
+num=int(input("Enter a number"))
+sum=0
+while num>0:
+ rem=num%10
+ sum=sum+rem
+ num=num//10
+print("Sum of individual digits of the given number is:",sum) 
+
+
+Pro 2:-
+
+# Python code to finding number of 
+# leap years in list of years.
+
+
+Input = []
+lower=int(input("Enter starting year:"))
+upper=int(input("Enter ending year:"))
+for i in range(lower,upper+1):
+    Input.append(i)
+
+
+def Leapyear(year):
+	return (((year % 4 == 0) and (year % 100 != 0)) or (year % 400 == 0)) 
+
+Noofyears = 0
+
+for element in Input:
+	if Leapyear(element):
+		Noofyears = Noofyears + 1
+		print ('Leap Year:',element)
+
+print("No of leap years are:", Noofyears)
+
+
+pro 3:-
+
+def get_words(string, i=0):
+   if i == len(string):    
+       print("".join(string))
+   for j in range(i, len(string)):
+       words = [c for c in string]
+       # swaping
+       words[i], words[j] = words[j], words[i]
+       get_words(words, i + 1)
+
+print(get_words('actog'))
+
+
+pro 4:- 
+
+def remove_stop_words(sentence):
+    stop_words = set(["a", "an", "the"])
+    words = sentence.split()
+    filtered_words = [word for word in words if word.lower() not in stop_words]
+    return ' '.join(filtered_words)
+
+def process_file(input_filename, output_filename):
+    try:
+        with open(input_filename, 'r') as infile, open(output_filename, 'w') as outfile:
+            for line in infile:
+                processed_line = remove_stop_words(line)
+                outfile.write(processed_line + '\n')
+        print(f"Processing complete. Output written to {output_filename}")
+    except FileNotFoundError:
+        print(f"Error: File '{input_filename}' not found.")
+
+# create a text file in the present dir named input.txt
+input_file = 'input.txt'
+
+# to display 
+output_file = 'out.txt'
+
+process_file(input_file, output_file)
+infile=open("out.txt","r")
+file_contents = infile.read()
+print (file_contents)
+
+
+pro 5:-
+
+# Python program to display the Fibonacci sequence
+
+def recur_fib(n):
+   if n <= 1:
+       return n
+   else:
+       return(recur_fib(n-1) + recur_fib(n-2))
+
+nterms = 10
+
+if nterms <= 0:
+   print("Plese enter a positive integer")
+else:
+   print("Fibonacci sequence:")
+   for i in range(nterms):
+       print(recur_fib(i))
+
+
+pro 6:-
+
+def quicksort(arr):
+
+    if len(arr) <= 1:
+
+     return arr
+
+    else:
+
+        pivot = arr[0]
+
+        left = [x for x in arr[1:] if x < pivot]
+
+        right = [x for x in arr[1:] if x >= pivot]
+
+        return quicksort(left) + [pivot] + quicksort(right)
+
+arr = [5, 1, 8, 3, 2]
+
+print("original array:", arr)
+
+sorted_arr = quicksort(arr)
+
+print("Sorted array:", sorted_arr)
+
+
+
+pro 7:-(iris)
+
+import random
+print("VP22CSCI0100009 - Venkat")
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+
+data = pd.read_csv("/content/Iris.csv")
+
+X = data[['SepalLengthCm', 'SepalWidthCm']]
+y = data['Species']
+
+# Training=70%, testing=30%
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+knn_classifier = KNeighborsClassifier(n_neighbors=10)
+knn_classifier.fit(X_train, y_train)
+
+y_pred = knn_classifier.predict(X_test)
+
+conf_matrix = confusion_matrix(y_test, y_pred)
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred, average='weighted')
+recall = recall_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+
+print("Confusion Matrix:")
+print(conf_matrix)
+print("\nAccuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+
